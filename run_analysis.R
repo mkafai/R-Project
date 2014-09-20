@@ -1,16 +1,16 @@
 library(reshape2)
 # Step 1: Merges the training and the test sets to create one data set.
-X_train <- read.table('./X_train.txt', header = FALSE)
-X_test <- read.table('./X_test.txt', header = FALSE)
-y_train = read.table('./y_train.txt', header = FALSE)
-y_test = read.table('./y_test.txt', header = FALSE)
-subject_train <- read.table('./subject_train.txt', header = FALSE)
-subject_test <- read.table('./subject_test.txt', header = FALSE)
+X_train <- read.table('./har_data/train/X_train.txt', header = FALSE)
+X_test <- read.table('./har_data/test/X_test.txt', header = FALSE)
+y_train = read.table('./har_data/train/y_train.txt', header = FALSE)
+y_test = read.table('./har_data/test/y_test.txt', header = FALSE)
+subject_train <- read.table('./har_data/train/subject_train.txt', header = FALSE)
+subject_test <- read.table('./har_data/test/subject_test.txt', header = FALSE)
 X <- rbind(X_train,X_test)
 y <- rbind(y_train,y_test)
 subject <- rbind(subject_train,subject_test)
 data <- cbind(subject,y,X)
-column_names <- read.table('./features.txt', header = FALSE, stringsAsFactors=FALSE)
+column_names <- read.table('./har_data/features.txt', header = FALSE, stringsAsFactors=FALSE)
 column_names <- c('subject','activity',column_names[,2])
 
 # Step 2: Extracts only the measurements on the mean and standard deviation for each measurement. 
@@ -19,7 +19,7 @@ data <- subset(data, select=column_subset)
 
 
 # Step 3: Uses descriptive activity names to name the activities in the data set
-activities <- read.table('./activity_labels.txt', header = FALSE)
+activities <- read.table('./har_data/activity_labels.txt', header = FALSE)
 data[,2] <- activities$V2[match(data[,2],activities$V1)] 
 
 
@@ -30,3 +30,4 @@ colnames(data) <- column_names[column_subset]
 dataMelt <- melt(data,id=c("subject","activity"))
 tidy_data <- dcast(dataMelt,subject+activity~variable,mean)
 # write.table(tidy_data,file="tidy_data.txt",sep=",",row.names=FALSE)
+
